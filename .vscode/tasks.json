@@ -8,6 +8,12 @@
             "type": "shell",
             "command": "echo '@' > query.txt; : > resources/input.json; : > resources/output.json; : > resources/view.csv",
             "problemMatcher": []
+        },
+        {
+            "label": "create resource files",
+            "type": "shell",
+            "command": "mkdir resources; cd resources; touch input.json; touch output.json; touch view.csv; touch query.txt",
+            "problemMatcher": []
         }
     ]
 }
