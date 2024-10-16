@@ -5,10 +5,5 @@
         "titleBar.activeForeground": "#FDFCFE"
     },
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true,
-    "editor.fontSize": 16,
-    "window.zoomLevel": 0.3,
-    "editor.fontFamily": "Ubuntu mono",
-    "terminal.integrated.fontSize": 15,
-    "terminal.integrated.fontFamily": "Hack"
+    "python.linting.enabled": true
 }

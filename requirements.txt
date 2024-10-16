@@ -6,3 +6,4 @@ mccabe==0.7.0
 pycodestyle==2.10.0
 pyflakes==3.0.1
 tomli==2.0.1
+pandas==2.2.3
