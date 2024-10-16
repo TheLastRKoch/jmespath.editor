@@ -2,7 +2,7 @@ import jmespath
 import json
 import os
 import sys
-import pandas
+import pandas as pd
 
 
 def read_textfile(path):
@@ -11,8 +11,40 @@ def read_textfile(path):
 
 
 def write_textfile(path, body):
-    with open(path, "w") as f:
+    with open(path, "w", encoding='utf-8') as f:
         f.write(body)
+
+
+def load_json(path):
+    return json.loads(read_textfile(path))
+
+
+def save_json(path, data):
+    write_textfile(path, json.dumps(data, indent=2))
+
+
+def save_csv(path, data):
+    df = pd.DataFrame(data)
+    df.to_csv(path, encoding='utf-8', index=False)
+
+
+def process_query(input_path, query_path):
+    input_data = load_json(input_path)
+    query = jmespath.compile(remove_comments(read_textfile(query_path)))
+    return query.search(input_data)
+
+
+def remove_comments(query):
+    new_query = ""
+    lines = query.split('\n')
+    for line in lines:
+        if not "#" in line:
+            new_query += line + "\n"
+    return new_query
+
+
+def clear_console():
+    os.system("clear")
 
 
 if __name__ == "__main__":
@@ -22,24 +54,25 @@ if __name__ == "__main__":
     QUERY_PATH = "resources/query.txt"
 
     try:
-        input_file = json.loads(read_textfile(INPUT_PATH))
-        query = jmespath.compile(read_textfile(QUERY_PATH))
-        exp = query.search(input_file)
-        items_count = len(exp)
-        os.system("clear")
+        expression = process_query(INPUT_PATH, QUERY_PATH)
+        items_count = len(expression)
+        clear_console()
+
         if len(sys.argv) > 1:
-            if sys.argv[1] == "output":
-                body = json.dumps(exp, indent=2)
-                write_textfile(OUTPUT_PATH, body)
+            command = sys.argv[1]
+            if command == "output":
+                save_json(OUTPUT_PATH, expression)
                 message = f"Output updated\n\n{items_count} items"
-            elif sys.argv[1] == "csv":
-                df = pandas.DataFrame(exp)
-                df.to_csv(CSV_PATH, encoding='utf-8')
+            elif command == "csv":
+                save_csv(CSV_PATH, expression)
                 message = f"CSV file generated\n\n{items_count} items"
             else:
-                message = json.dumps(exp, indent=2)
+                message = json.dumps(expression, indent=2)
+        else:
+            message = json.dumps(expression, indent=2)
+
         print(message)
 
     except Exception as e:
-        os.system("clear")
+        clear_console()
         print(e)
